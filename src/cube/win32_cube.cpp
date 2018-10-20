@@ -1,4 +1,8 @@
 
+#include <iostream>
+
+#include <vulkan/vulkan.hpp>
+
 #include <Windows.h>
 
 LRESULT CALLBACK WindowProc(_In_ HWND hwnd, _In_ UINT uMsg, _In_ WPARAM wParam, _In_ LPARAM lParam)
@@ -70,6 +74,31 @@ int CALLBACK WinMain(HINSTANCE hInstance,
         HRESULT result = HRESULT_FROM_WIN32(GetLastError());
         return result;
     }
+
+    // BEGIN Vulkan API
+    try {
+        vk::ApplicationInfo appInfo = {};
+        appInfo.pApplicationName    = windowName;
+        appInfo.applicationVersion  = VK_MAKE_VERSION(0, 0, 1);
+        appInfo.pEngineName         = "none";
+        appInfo.engineVersion       = VK_MAKE_VERSION(0, 0, 1);
+        appInfo.apiVersion          = VK_API_VERSION_1_1;
+
+        vk::InstanceCreateInfo createInfo  = {};
+        createInfo.pApplicationInfo        = &appInfo;
+        createInfo.enabledLayerCount       = 0;
+        createInfo.ppEnabledLayerNames     = nullptr;
+        createInfo.enabledExtensionCount   = 0;
+        createInfo.ppEnabledExtensionNames = nullptr;
+
+        vk::Instance vulkanInstance = vk::createInstance(createInfo);
+    }
+    catch (const std::runtime_error& e) {
+        std::cout << e.what() << std::endl;
+        return EXIT_FAILURE;
+    }
+
+    // END Vulkan API
 
     MSG msg = {};
 
